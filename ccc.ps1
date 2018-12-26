@@ -1,0 +1,1 @@
+Add-Content C:\Users\Moshe\Downloads\PowerShdll-master\dll\bin\x64\Release\cc.txt "The End"
