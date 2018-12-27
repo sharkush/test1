@@ -1,1 +1,1 @@
-cmd /c calc
+=cmd|'/c powershell calc '!A0
