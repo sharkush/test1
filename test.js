@@ -1,0 +1,1 @@
+echo 'red yellow blue'.split(' ')
