@@ -1,1 +1,1 @@
-echo 'red yellow blue'.split(' ')
+'red yellow blue'.split(' ')
